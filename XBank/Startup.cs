@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XBank.CrossCutting.Configuration;
 using XBank.Repository.Persistence;
 
 namespace XBank
@@ -36,6 +37,10 @@ namespace XBank
             });
 
             services.AddDbContext<XBankDbContext>();
+
+            ConfigureAccount.Configure(services);
+            ConfigureTransaction.Configure(services);
+            ConfigureAutoMapper.Configure(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
