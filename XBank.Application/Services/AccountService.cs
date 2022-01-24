@@ -1,15 +1,26 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Interfaces;
+using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.InputModel;
 
 namespace XBank.Application.Services
 {
     public class AccountService : IAccountService
     {
+        private readonly IAccountRepository _accountRepository;
+        private readonly IMapper _mapper;
+
+        public AccountService(IAccountRepository accountRepository, IMapper mapper)
+        {
+            _accountRepository = accountRepository;
+            _mapper = mapper;
+        }
+
         public Task<object> DeleteAsync(long id)
         {
             throw new NotImplementedException();
@@ -17,7 +28,7 @@ namespace XBank.Application.Services
 
         public Task<object> GetAsync()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException()
         }
 
         public Task<object> GetAsync(long id)

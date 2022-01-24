@@ -9,7 +9,7 @@ namespace XBank.Domain.Interfaces.Repository
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<T> GetAsync();
+        Task<IEnumerable<T>> GetAsync();
         Task<T> GetAsync(long id);
         Task<bool> ExistAsync(long id);
         Task<T> PostAsync(T entity);

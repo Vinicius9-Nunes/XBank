@@ -1,48 +1,65 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Entities;
 using XBank.Domain.Interfaces.Repository;
+using XBank.Repository.Persistence;
 
 namespace XBank.Repository.Repository
 {
     public class AccountRepository : IAccountRepository
     {
-        public Task<bool> DeleteAsync(long id)
+        private readonly XBankDbContext _dbContext;
+        private readonly DbSet<AccountEntity> _dbSet;
+
+        public AccountRepository(XBankDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+            _dbSet = _dbContext.Set<AccountEntity>();
         }
 
-        public Task<bool> ExistAsync(long id)
+        public async Task<bool> DeleteAsync(long id)
         {
-            throw new NotImplementedException();
+            AccountEntity entity = await GetAsync(id);
+            var response = _dbSet.Remove(entity);
+            return response.Entity.Id > 0;
         }
 
-        public Task<AccountEntity> GetAsync()
+        public async Task<bool> ExistAsync(long id)
         {
-            throw new NotImplementedException();
+            AccountEntity entity = await GetAsync(id);
+            return entity?.Id > 0;
         }
 
-        public Task<AccountEntity> GetAsync(long id)
+        public async Task<IEnumerable<AccountEntity>> GetAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
         }
 
-        public Task<AccountEntity> GetByCpfAsync(string cpf)
+        public async Task<AccountEntity> GetAsync(long id)
         {
-            throw new NotImplementedException();
+            AccountEntity entity = await _dbSet.FirstOrDefaultAsync(account => account.Id.Equals(id));
+            return entity;
         }
 
-        public Task<AccountEntity> PostAsync(AccountEntity entity)
+        public async Task<AccountEntity> GetByCpfAsync(string cpf)
         {
-            throw new NotImplementedException();
+            AccountEntity entity = await _dbSet.FirstOrDefaultAsync(account => account.HolderCpf.Equals(cpf));
+            return entity;
         }
 
-        public Task<AccountEntity> PutAsync(AccountEntity entity)
+        public async Task<AccountEntity> PostAsync(AccountEntity entity)
         {
-            throw new NotImplementedException();
+            var entityResponse = await _dbSet.AddAsync(entity);
+            return entityResponse.Entity;
+        }
+
+        public async Task<AccountEntity> PutAsync(AccountEntity entity)
+        {
+            return _dbSet.Update(entity).Entity;
         }
     }
 }

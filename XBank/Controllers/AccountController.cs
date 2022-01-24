@@ -29,7 +29,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.GetAsync());
+                return Ok(await _accountService.GetAsync());
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.GetAsync(id));
+                return Ok(await _accountService.GetAsync(id));
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.GetByCpfAsync(cpf));
+                return Ok(await _accountService.GetByCpfAsync(cpf));
             }
             catch (Exception ex)
             {
@@ -77,7 +77,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.PostAsync(accountInputModel));
+                return Ok(await _accountService.PostAsync(accountInputModel));
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.PutAsync(id, accountInputModel));
+                return Ok(await _accountService.PutAsync(id, accountInputModel));
             }
             catch (Exception ex)
             {
@@ -109,7 +109,7 @@ namespace XBank.Controllers
 
             try
             {
-                return Ok(_accountService.DeleteAsync(id));
+                return Ok(await _accountService.DeleteAsync(id));
             }
             catch (Exception ex)
             {
