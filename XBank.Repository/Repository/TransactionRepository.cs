@@ -21,6 +21,12 @@ namespace XBank.Repository.Repository
             _dbSet = _dbContext.Set<TransactionEntity>();
         }
 
+        public async Task<bool> Commit()
+        {
+            int response = await _dbContext.SaveChangesAsync();
+            return response > 0;
+        }
+
         public async Task<bool> DeleteAsync(long id)
         {
             TransactionEntity entity = await GetAsync(id);

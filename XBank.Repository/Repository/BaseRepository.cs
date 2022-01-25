@@ -10,6 +10,11 @@ namespace XBank.Repository.Repository
 {
     public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
+        public Task<bool> Commit()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> DeleteAsync(long id)
         {
             throw new NotImplementedException();
@@ -36,6 +41,11 @@ namespace XBank.Repository.Repository
         }
 
         public Task<T> PutAsync(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<T>> IRepository<T>.GetAsync()
         {
             throw new NotImplementedException();
         }

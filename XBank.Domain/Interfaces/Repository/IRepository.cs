@@ -15,5 +15,6 @@ namespace XBank.Domain.Interfaces.Repository
         Task<T> PostAsync(T entity);
         Task<T> PutAsync(T entity);
         Task<bool> DeleteAsync(long id);
+        Task<bool> Commit();
     }
 }

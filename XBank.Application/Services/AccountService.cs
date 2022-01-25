@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XBank.Domain.Entities;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.InputModel;
@@ -21,34 +22,79 @@ namespace XBank.Application.Services
             _mapper = mapper;
         }
 
-        public Task<object> DeleteAsync(long id)
+        public async Task<object> DeleteAsync(long id)
         {
-            throw new NotImplementedException();
+            if (id < 1)
+                return new ArgumentNullException("Id informado é nulo.");
+            if (!await _accountRepository.ExistAsync(id))
+                return new Exception("Nenhuma conta encontrada pelo id informado");
+
+            bool response = await _accountRepository.DeleteAsync(id);
+            return response;
+
         }
 
-        public Task<object> GetAsync()
+        public async Task<object> GetAsync()
         {
-            throw new NotImplementedException()
+            return await _accountRepository.GetAsync();
         }
 
-        public Task<object> GetAsync(long id)
+        public async Task<object> GetAsync(long id)
         {
-            throw new NotImplementedException();
+            if (id < 1)
+                return new ArgumentNullException("Id informado é nulo.");
+            if (!await _accountRepository.ExistAsync(id))
+                return new Exception("Nenhuma conta encontrada pelo id informado");
+
+            return await _accountRepository.GetAsync(id);
         }
 
-        public Task<object> GetByCpfAsync(string cpf)
+        public async Task<object> GetByCpfAsync(string cpf)
         {
-            throw new NotImplementedException();
+            cpf = cpf.Trim();
+
+            if (cpf.Length != 11)
+                return new Exception("CPF invalido, favor validar se foi informado somente os números.");
+
+            AccountEntity accountEntity = await _accountRepository.GetByCpfAsync(cpf);
+            if (accountEntity == null || accountEntity?.Id < 1)
+                return new Exception("Nenhuma conta encontrada pelo CPF informado.");
+
+            return accountEntity;
         }
 
-        public Task<object> PostAsync(AccountInputModelCreate accountInputModel)
+        public async Task<object> PostAsync(AccountInputModelCreate accountInputModel)
         {
-            throw new NotImplementedException();
+            AccountEntity accountEntity = _mapper.Map<AccountEntity>(accountInputModel);
+            AccountEntity response = await _accountRepository.PostAsync(accountEntity);
+
+            if (await _accountRepository.ExistAsync(response.Id))
+            {
+                bool isCommitted = await _accountRepository.Commit();
+                if (isCommitted)
+                    return response;                    
+            }
+
+            return new Exception("Ocorreu um erro ao criar a conta.");
         }
 
-        public Task<object> PutAsync(long id, AccountInputModelUpdate accountInputModel)
+        public async Task<object> PutAsync(long id, AccountInputModelUpdate accountInputModel)
         {
-            throw new NotImplementedException();
+            if(id < 1)
+                return new ArgumentNullException("Id informado é nulo.");
+            if (!await _accountRepository.ExistAsync(id))
+                return new Exception("Nenhuma conta encontrada pelo id informado");
+
+            AccountEntity accountEntity = await _accountRepository.GetAsync(id);
+            AccountEntity respose = await _accountRepository.PutAsync(accountEntity);
+            if(respose.Id > 0)
+            {
+                bool isCommitted = await _accountRepository.Commit();
+                if (isCommitted)
+                    return respose;
+            }
+
+            return new Exception("Ocorreu um erro ao criar a conta.");
         }
     }
 }

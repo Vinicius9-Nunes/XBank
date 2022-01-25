@@ -61,5 +61,11 @@ namespace XBank.Repository.Repository
         {
             return _dbSet.Update(entity).Entity;
         }
+
+        public async Task<bool> Commit()
+        {
+             int response = await _dbContext.SaveChangesAsync();
+            return response > 0;
+        }
     }
 }

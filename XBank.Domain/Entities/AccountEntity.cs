@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Enums.Account;
+using XBank.Domain.Models.InputModel;
 
 namespace XBank.Domain.Entities
 {
@@ -16,5 +17,15 @@ namespace XBank.Domain.Entities
         public AccountStatus AccountStatus { get; private set; }
 
         public IEnumerable<TransactionEntity> Transactions { get; private set; }
+
+        public AccountEntity Update(AccountInputModelUpdate accountInputModel)
+        {
+            if (accountInputModel.DueDate > 0)
+                DueDate = accountInputModel.DueDate;
+            if (!string.IsNullOrEmpty(accountInputModel.HolderName))
+                HolderName = accountInputModel.HolderName;
+
+            return this;
+        }
     }
 }

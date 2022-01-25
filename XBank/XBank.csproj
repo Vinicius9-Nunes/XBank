@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XBank.CrossCutting\XBank.CrossCutting.csproj" />
     <ProjectReference Include="..\XBank.Repository\XBank.Repository.csproj" />
   </ItemGroup>
 

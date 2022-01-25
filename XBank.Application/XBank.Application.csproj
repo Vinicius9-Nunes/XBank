@@ -8,4 +8,9 @@
     <ProjectReference Include="..\XBank.Domain\XBank.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Account\" />
+    <Folder Include="Transaction\" />
+  </ItemGroup>
+
 </Project>

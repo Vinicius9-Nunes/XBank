@@ -15,5 +15,6 @@ namespace XBank.Domain.Models.InputModel
         public string HolderCpf { get; set; }
         [Required]
         public int DueDate { get; set; }
+
     }
 }
