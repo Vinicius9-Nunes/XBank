@@ -25,9 +25,9 @@ namespace XBank.Application.Services
         public async Task<object> DeleteAsync(long id)
         {
             if (id < 1)
-                return new ArgumentNullException("Id informado é nulo.");
+                throw new ArgumentNullException("Id informado é nulo.");
             if (!await _accountRepository.ExistAsync(id))
-                return new Exception("Nenhuma conta encontrada pelo id informado");
+                throw new Exception("Nenhuma conta encontrada pelo id informado");
 
             bool response = await _accountRepository.DeleteAsync(id);
             return response;
@@ -42,9 +42,9 @@ namespace XBank.Application.Services
         public async Task<object> GetAsync(long id)
         {
             if (id < 1)
-                return new ArgumentNullException("Id informado é nulo.");
+                throw new ArgumentNullException("Id informado é nulo.");
             if (!await _accountRepository.ExistAsync(id))
-                return new Exception("Nenhuma conta encontrada pelo id informado");
+                throw new Exception("Nenhuma conta encontrada pelo id informado");
 
             return await _accountRepository.GetAsync(id);
         }
@@ -54,11 +54,11 @@ namespace XBank.Application.Services
             cpf = cpf.Trim();
 
             if (cpf.Length != 11)
-                return new Exception("CPF invalido, favor validar se foi informado somente os números.");
+                throw new Exception("CPF invalido, favor validar se foi informado somente os números.");
 
             AccountEntity accountEntity = await _accountRepository.GetByCpfAsync(cpf);
             if (accountEntity == null || accountEntity?.Id < 1)
-                return new Exception("Nenhuma conta encontrada pelo CPF informado.");
+                throw new Exception("Nenhuma conta encontrada pelo CPF informado.");
 
             return accountEntity;
         }
@@ -75,15 +75,15 @@ namespace XBank.Application.Services
                     return response;                    
             }
 
-            return new Exception("Ocorreu um erro ao criar a conta.");
+            throw new Exception("Ocorreu um erro ao criar a conta.");
         }
 
         public async Task<object> PutAsync(long id, AccountInputModelUpdate accountInputModel)
         {
             if(id < 1)
-                return new ArgumentNullException("Id informado é nulo.");
+                throw new ArgumentNullException("Id informado é nulo.");
             if (!await _accountRepository.ExistAsync(id))
-                return new Exception("Nenhuma conta encontrada pelo id informado");
+                throw new Exception("Nenhuma conta encontrada pelo id informado");
 
             AccountEntity accountEntity = await _accountRepository.GetAsync(id);
             AccountEntity respose = await _accountRepository.PutAsync(accountEntity);
@@ -94,7 +94,7 @@ namespace XBank.Application.Services
                     return respose;
             }
 
-            return new Exception("Ocorreu um erro ao criar a conta.");
+            throw new Exception("Ocorreu um erro ao criar a conta.");
         }
     }
 }
