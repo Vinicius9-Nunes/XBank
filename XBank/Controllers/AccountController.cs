@@ -53,7 +53,7 @@ namespace XBank.Controllers
             }
         }
 
-        [HttpGet("{cpf}")]
+        [HttpGet("GetByCpf/{cpf}")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             if (!ModelState.IsValid)
@@ -62,6 +62,22 @@ namespace XBank.Controllers
             try
             {
                 return Ok(await _accountService.GetByCpfAsync(cpf));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetAccountIdByCpf/{accountCpf}")]
+        public async Task<IActionResult> GetAccountIdByCpf(string accountCpf)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                return Ok(await _accountService.GetAccountIdByCpfAsync(accountCpf));
             }
             catch (Exception ex)
             {

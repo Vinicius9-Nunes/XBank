@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,5 +14,13 @@ namespace XBank.Domain.Entities
         public double Amount { get; private set; }
         public DateTime TransactionDate { get; private set; }
         public TransactionType TransactionType { get; private set; }
+        [ForeignKey("AccountId")]
+        public long AccountEntityId { get; private set; }
+
+        public void UpdateAccountEntityId(long accountId)
+        {
+            if (accountId > 0)
+                AccountEntityId = accountId;
+        }
     }
 }

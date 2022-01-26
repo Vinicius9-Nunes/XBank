@@ -12,6 +12,7 @@ namespace XBank.Domain.Interfaces
         Task<object> GetAsync();
         Task<object> GetAsync(long id);
         Task<object> GetByCpfAsync(string cpf);
+        Task<long> GetAccountIdByCpfAsync(string cpf);
         Task<object> PostAsync(AccountInputModelCreate accountInputModel);
         Task<object> PutAsync(long id, AccountInputModelUpdate accountInputModel);
         Task<object> DeleteAsync(long id);

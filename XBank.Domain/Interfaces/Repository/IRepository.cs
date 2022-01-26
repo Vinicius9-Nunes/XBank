@@ -12,9 +12,9 @@ namespace XBank.Domain.Interfaces.Repository
         Task<IEnumerable<T>> GetAsync();
         Task<T> GetAsync(long id);
         Task<bool> ExistAsync(long id);
-        Task<T> PostAsync(T entity);
-        Task<T> PutAsync(T entity);
-        Task<bool> DeleteAsync(long id);
+        Task<bool> PostAsync(T entity);
+        Task<bool> PutAsync(T entity);
+        Task<bool> DeleteAsync(T entity);
         Task<bool> Commit();
     }
 }

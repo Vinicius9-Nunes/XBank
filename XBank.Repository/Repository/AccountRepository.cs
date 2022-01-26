@@ -21,11 +21,10 @@ namespace XBank.Repository.Repository
             _dbSet = _dbContext.Set<AccountEntity>();
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(AccountEntity entity)
         {
-            AccountEntity entity = await GetAsync(id);
             var response = _dbSet.Remove(entity);
-            return response.Entity.Id > 0;
+            return response.State == EntityState.Deleted;
         }
 
         public async Task<bool> ExistAsync(long id)
@@ -51,15 +50,16 @@ namespace XBank.Repository.Repository
             return entity;
         }
 
-        public async Task<AccountEntity> PostAsync(AccountEntity entity)
+        public async Task<bool> PostAsync(AccountEntity entity)
         {
-            var entityResponse = await _dbSet.AddAsync(entity);
-            return entityResponse.Entity;
+            var response = await _dbSet.AddAsync(entity);
+            return response.State == EntityState.Added;
         }
 
-        public async Task<AccountEntity> PutAsync(AccountEntity entity)
+        public async Task<bool> PutAsync(AccountEntity entity)
         {
-            return _dbSet.Update(entity).Entity;
+            var response = _dbSet.Update(entity);
+            return response.State == EntityState.Modified;
         }
 
         public async Task<bool> Commit()

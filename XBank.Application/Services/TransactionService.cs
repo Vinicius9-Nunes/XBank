@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Entities;
@@ -28,8 +29,8 @@ namespace XBank.Application.Services
                 throw new Exception("Id Informado é nulo.");
             if (!await _transactionRepository.ExistAsync(id))
                 throw new Exception("Nenhuma trasação encontrada pelo id Informado.");
-
-            bool response = await _transactionRepository.DeleteAsync(id);
+            TransactionEntity transactionEntity = await _transactionRepository.GetAsync(id);
+            bool response = await _transactionRepository.DeleteAsync(transactionEntity);
             if (response)
             {
                 bool isCommitted = await _transactionRepository.Commit();
@@ -59,15 +60,27 @@ namespace XBank.Application.Services
         public async Task<object> PostAsync(string cpf, TransactionInputModelCreate transactionInputModel)
         {
             TransactionEntity transactionEntity = _mapper.Map<TransactionEntity>(transactionInputModel);
-            TransactionEntity response = await _transactionRepository.PostAsync(transactionEntity);
 
-            if (await _transactionRepository.ExistAsync(response.Id))
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(@$"https://localhost:44393/api/Account/GetAccountIdByCpf/{cpf}");
+            if (response.IsSuccessStatusCode)
             {
-                bool isCommitted = await _transactionRepository.Commit();
-                if (isCommitted)
-                    return response;
-            }
+                string accountIdResponse = await response.Content.ReadAsStringAsync();
+                long accountId = new long();
+                var a = long.TryParse(accountIdResponse, out accountId);
+                if(accountId > 0)
+                {
+                    transactionEntity.UpdateAccountEntityId(accountId);
+                    bool added = await _transactionRepository.PostAsync(transactionEntity);
+                    if (added)
+                    {
+                        bool isCommitted = await _transactionRepository.Commit();
+                        if (isCommitted && await _transactionRepository.ExistAsync(transactionEntity.Id))
+                            return await _transactionRepository.GetAsync(transactionEntity.Id);
+                    }
 
+                }
+            }
             throw new Exception("Ocorreu um erro ao criar a transação.");
         }
     }

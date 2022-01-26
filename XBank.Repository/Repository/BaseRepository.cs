@@ -8,46 +8,8 @@ using XBank.Domain.Interfaces.Repository;
 
 namespace XBank.Repository.Repository
 {
-    public class BaseRepository<T> : IRepository<T> where T : BaseEntity
+    public class BaseRepository<T>// : IRepository<T> where T : BaseEntity
     {
-        public Task<bool> Commit()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ExistAsync(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> GetAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> GetAsync(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> PostAsync(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> PutAsync(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IEnumerable<T>> IRepository<T>.GetAsync()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
