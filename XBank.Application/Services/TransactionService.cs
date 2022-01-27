@@ -81,6 +81,10 @@ namespace XBank.Application.Services
 
                 }
             }
+            else
+            {
+                throw new Exception("Ocorreu um erro ao recuperar AccountId.");
+            }
             throw new Exception("Ocorreu um erro ao criar a transação.");
         }
     }
