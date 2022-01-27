@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace XBank.Domain.Models.InputModel
 {
-    public class AccountInputModelCreate
+    public class AccountInputModelCreate : BaseInputModel
     {
         [Required]
         public string HolderName { get; set; }
@@ -16,5 +16,9 @@ namespace XBank.Domain.Models.InputModel
         [Required]
         public int DueDate { get; set; }
 
+        public override void RemoveCpfLetters()
+        {
+            HolderCpf = HolderCpf.RemoveCpfLetters();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using XBank.Domain.Entities;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.InputModel;
+using XBank.Domain.Validators.InputModelsValidators;
 
 namespace XBank.Application.Services
 {
@@ -16,11 +18,13 @@ namespace XBank.Application.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
+        private readonly TransactionInputModelCreateValidator _transactionValidation;
 
         public TransactionService(ITransactionRepository transactionRepository, IMapper mapper)
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
+            _transactionValidation = new TransactionInputModelCreateValidator();
         }
 
         public async Task<object> DeleteAsync(long id)
@@ -59,15 +63,18 @@ namespace XBank.Application.Services
 
         public async Task<object> PostAsync(string cpf, TransactionInputModelCreate transactionInputModel)
         {
+            if(!cpf.IsValidCPF())
+                throw new ArgumentException("O cpf informado é invalido.");
+
             TransactionEntity transactionEntity = _mapper.Map<TransactionEntity>(transactionInputModel);
 
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(@$"https://localhost:44393/api/Account/GetAccountIdByCpf/{cpf}");
+            HttpResponseMessage response = await client.GetAsync(@$"https://localhost:44393/api/Account/GetAccountIdByCpf/{cpf.RemoveCpfLetters()}");
             if (response.IsSuccessStatusCode)
             {
                 string accountIdResponse = await response.Content.ReadAsStringAsync();
                 long accountId = new long();
-                var a = long.TryParse(accountIdResponse, out accountId);
+                long.TryParse(accountIdResponse, out accountId);
                 if(accountId > 0)
                 {
                     transactionEntity.UpdateAccountEntityId(accountId);

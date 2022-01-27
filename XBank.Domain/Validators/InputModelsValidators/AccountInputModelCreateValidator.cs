@@ -18,6 +18,7 @@ namespace XBank.Domain.Validators.InputModelsValidators
         public AccountInputModelCreateValidator(IConfiguration configuration)
         {
             _configuration = configuration;
+            GetMaxDueDateFromSettings();
 
             RuleFor(account => account.DueDate)
                 .NotEmpty()
@@ -46,11 +47,15 @@ namespace XBank.Domain.Validators.InputModelsValidators
                 .NotEmpty()
                 .WithMessage("O CPF do titular deve ser informado.");
             RuleFor(account => account.HolderCpf)
-                .Must(cpf => cpf.Length == 11)
+                .Must(cpf => cpf.RemoveCpfLetters().Length == 11)
                 .WithMessage("O CPF do titular deve ter 11 digitos.");
             RuleFor(account => account.HolderCpf)
-                .Must(holderCpf => holderCpf.IsValidCPF())
-                .WithMessage("O cpf informado é invalido.");
+                .Custom((list, context) =>
+                {
+                    list.RemoveCpfLetters();
+                    if (!list.IsValidCPF())
+                        context.AddFailure("Não foi possivel recuperar o dia maximo de vencimento.");
+                });
         }
 
         private bool GetMaxDueDateFromSettings()

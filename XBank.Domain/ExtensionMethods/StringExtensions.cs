@@ -11,13 +11,24 @@ namespace System
     {
         public static bool IsValidCPF(this string cpf)
         {
-            const string REGEX_TO_VALIDATE_ONLY_NUMBERS = @"/^\d{3}\d{3}\d{3}\d{2}$/";
+            const string REGEX_TO_VALIDATE_ONLY_NUMBERS = @"^\d{3}\d{3}\d{3}\d{2}$";
 
             string cpfWithoutNumbers = String.Join("", Regex.Split(cpf, @"[^\d]"));
 
             Regex regex = new Regex(REGEX_TO_VALIDATE_ONLY_NUMBERS);
-            Match match = regex.Match(cpfWithoutNumbers);
-            return match.Success;
+            bool match = regex.IsMatch(cpfWithoutNumbers);
+            if (match)
+            {
+                cpf = cpfWithoutNumbers;
+                return match;
+            }
+            return false;
+        }
+
+        public static string RemoveCpfLetters(this string cpf)
+        {
+            cpf = String.Join("", Regex.Split(cpf, @"[^\d]"));
+            return cpf;
         }
     }
 }

@@ -81,6 +81,7 @@ namespace XBank.Application.Services
 
         public async Task<object> PostAsync(AccountInputModelCreate accountInputModel)
         {
+            accountInputModel.RemoveCpfLetters();
             AccountEntity accountEntity = _mapper.Map<AccountEntity>(accountInputModel);
             bool added = await _accountRepository.PostAsync(accountEntity);
 

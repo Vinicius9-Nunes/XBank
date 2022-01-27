@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XBank.Application.Services;
-using XBank.Domain.Interfaces;
+using XBank.Domain.Interfaces.Repository;
+using XBank.Repository.Repository;
 
 namespace XBank.CrossCutting.Configuration
 {
-    public static class ConfigureAccount
+    public static class ConfigureRepository
     {
         public static void Configure(IServiceCollection services)
         {
-            services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<ITransactionRepository, TransactionRepository>();
         }
     }
 }

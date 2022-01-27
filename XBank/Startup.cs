@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBank.CrossCutting.Configuration;
+using XBank.Domain.Models.InputModel;
+using XBank.Domain.Validators.InputModelsValidators;
 using XBank.Repository.Persistence;
 
 namespace XBank
@@ -41,8 +44,8 @@ namespace XBank
 
             services.AddDbContext<XBankDbContext>();
 
-            ConfigureAccount.Configure(services);
-            ConfigureTransaction.Configure(services);
+            ConfigureService.Configure(services);
+            ConfigureRepository.Configure(services);
             ConfigureAutoMapper.Configure(services);
         }
 

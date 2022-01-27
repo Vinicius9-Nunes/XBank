@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XBank.Repository.Persistence;
 
 namespace XBank.Repository.Migrations
 {
     [DbContext(typeof(XBankDbContext))]
-    partial class XBankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220127035908_Removendo_obrigatoriedade_de_descricao")]
+    partial class Removendo_obrigatoriedade_de_descricao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

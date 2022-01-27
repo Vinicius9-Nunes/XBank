@@ -33,7 +33,7 @@ namespace XBank.Repository.Persistence
             {
                 entity.HasKey(trans => trans.Id);
                 entity.Property(trans => trans.Id).ValueGeneratedOnAdd();
-                entity.Property(trans => trans.Description).HasMaxLength(70).IsRequired();
+                entity.Property(trans => trans.Description).HasMaxLength(70);
                 entity.Property(trans => trans.Amount).IsRequired();
                 entity.Property(trans => trans.TransactionDate).IsRequired();
                 entity.Property(trans => trans.TransactionType).IsRequired();
