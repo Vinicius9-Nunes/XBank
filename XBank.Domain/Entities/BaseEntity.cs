@@ -8,8 +8,8 @@ namespace XBank.Domain.Entities
 {
     public abstract class BaseEntity
     {
-        public long Id { get; private set; }
-        public DateTime CreatAt { get; private set; }
-        public DateTime UpdateAt { get; private set; }
+        public long Id { get; protected set; }
+        public DateTime CreatAt { get; protected set; }
+        public DateTime UpdateAt { get; protected set; }
     }
 }

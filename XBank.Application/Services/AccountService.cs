@@ -65,10 +65,9 @@ namespace XBank.Application.Services
 
         public async Task<object> GetByCpfAsync(string cpf)
         {
-            cpf = cpf.Trim();
-
-            //if (cpf.Length != 11)
-            //    throw new Exception("CPF invalido, favor validar se foi informado somente os números.");
+            cpf = cpf.Trim().RemoveCpfLetters();
+            if (!cpf.IsValidCPF())
+                throw new Exception("Cpf infomado é inválido");
 
             AccountEntity accountEntity = await _accountRepository.GetByCpfAsync(cpf);
             if (accountEntity == null || accountEntity?.Id < 1)
@@ -77,12 +76,15 @@ namespace XBank.Application.Services
             return accountEntity;
         }
 
-
-
         public async Task<object> PostAsync(AccountInputModelCreate accountInputModel)
         {
             accountInputModel.RemoveCpfLetters();
+            AccountEntity account = await _accountRepository.GetByCpfAsync(accountInputModel.HolderCpf);
+            if (account != null || account?.Id > 0)
+                throw new Exception("Já existe uma conta vinculada a esse CPF.");
+
             AccountEntity accountEntity = _mapper.Map<AccountEntity>(accountInputModel);
+            accountEntity.InitializeAccount();
             bool added = await _accountRepository.PostAsync(accountEntity);
 
             if (added)

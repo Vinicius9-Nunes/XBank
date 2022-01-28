@@ -24,8 +24,24 @@ namespace XBank.Domain.Entities
                 DueDate = accountInputModel.DueDate;
             if (!string.IsNullOrEmpty(accountInputModel.HolderName))
                 HolderName = accountInputModel.HolderName;
+            UpdateAt = DateTime.Now;
 
             return this;
+        }
+
+        public void InitializeAccount()
+        {
+            DateTime date = DateTime.Now;
+            CreatAt = date;
+            UpdateAt = date;
+            if (!(Balance > 0))
+                Balance = 0;
+        }
+
+        public void Debit(double value)
+        {
+            Balance = Balance - value;
+            UpdateAt = DateTime.Now;
         }
     }
 }

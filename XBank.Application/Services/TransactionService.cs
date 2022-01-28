@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using XBank.Application.Services.Core;
+using XBank.Application.Transaction;
 using XBank.Domain.Entities;
+using XBank.Domain.Enums.Transaction;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.InputModel;
@@ -18,13 +22,15 @@ namespace XBank.Application.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
-        private readonly TransactionInputModelCreateValidator _transactionValidation;
+        private readonly LocalRequestHttp _localRequestHttp;
+        private readonly IConfiguration _configuration;
 
-        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper)
+        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper, IConfiguration configuration)
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
-            _transactionValidation = new TransactionInputModelCreateValidator();
+            _localRequestHttp = new LocalRequestHttp();
+            _configuration = configuration;
         }
 
         public async Task<object> DeleteAsync(long id)
@@ -41,9 +47,9 @@ namespace XBank.Application.Services
                 if (isCommitted)
                     return response;
             }
-            
+
             throw new Exception("Ocorreu um erro ao deletar a transação.");
-            
+
         }
 
         public async Task<object> GetAsync()
@@ -63,21 +69,29 @@ namespace XBank.Application.Services
 
         public async Task<object> PostAsync(string cpf, TransactionInputModelCreate transactionInputModel)
         {
-            if(!cpf.IsValidCPF())
+            if (!cpf.IsValidCPF())
                 throw new ArgumentException("O cpf informado é invalido.");
+            cpf = cpf.RemoveCpfLetters();
 
             TransactionEntity transactionEntity = _mapper.Map<TransactionEntity>(transactionInputModel);
 
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(@$"https://localhost:44393/api/Account/GetAccountIdByCpf/{cpf.RemoveCpfLetters()}");
-            if (response.IsSuccessStatusCode)
+            string fullUrl = string.Concat(UtilitiesLibrary.GetSectionFromSettings(_configuration, "EndPoints", "BaseEndPointAccount"), "GetAccountIdByCpf/");
+            long accountId = await _localRequestHttp.Get<long>(fullUrl, cpf);
+
+            if (accountId > 0)
             {
-                string accountIdResponse = await response.Content.ReadAsStringAsync();
-                long accountId = new long();
-                long.TryParse(accountIdResponse, out accountId);
-                if(accountId > 0)
+                transactionEntity.UpdateAccountEntityId(accountId);
+                BankTransaction bankTransaction = null;
+
+                if(transactionEntity.TransactionType == TransactionType.Credit)
+                    bankTransaction = new CreditTransaction();
+
+                else if(transactionEntity.TransactionType == TransactionType.Debit)
+                    bankTransaction = new DebitTransaction(_configuration);
+
+                bool UpdateAccount = await bankTransaction.MakeTransaction(transactionEntity);
+                if (UpdateAccount)
                 {
-                    transactionEntity.UpdateAccountEntityId(accountId);
                     bool added = await _transactionRepository.PostAsync(transactionEntity);
                     if (added)
                     {
@@ -85,13 +99,9 @@ namespace XBank.Application.Services
                         if (isCommitted && await _transactionRepository.ExistAsync(transactionEntity.Id))
                             return await _transactionRepository.GetAsync(transactionEntity.Id);
                     }
-
                 }
             }
-            else
-            {
-                throw new Exception("Ocorreu um erro ao recuperar AccountId.");
-            }
+
             throw new Exception("Ocorreu um erro ao criar a transação.");
         }
     }

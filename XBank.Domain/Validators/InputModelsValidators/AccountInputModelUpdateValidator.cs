@@ -18,6 +18,7 @@ namespace XBank.Domain.Validators.InputModelsValidators
         public AccountInputModelUpdateValidator(IConfiguration configuration)
         {
             _configuration = configuration;
+            GetMaxDueDateFromSettings();
 
             RuleFor(account => account.DueDate)
                 .NotEmpty()
