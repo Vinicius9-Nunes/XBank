@@ -52,12 +52,6 @@ namespace XBank.Domain.Entities
                 Balance = 0;
         }
 
-        public void Debit(double value)
-        {
-            Balance = Balance - value;
-            UpdateAt = DateTime.Now;
-        }
-
         public void Disabled()
         {
             if (AccountStatus != AccountStatus.Disabled)

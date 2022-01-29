@@ -7,7 +7,7 @@ using XBank.Domain.Enums.Account;
 
 namespace XBank.Domain.Models.DTOs
 {
-    public class AccountCreateDTO
+    public class AccountCreateDTO : ModelDTO
     {
         public string HolderName { get; set; }
         public string HolderCpf { get; set; }

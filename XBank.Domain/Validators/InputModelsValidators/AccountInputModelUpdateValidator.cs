@@ -20,10 +20,10 @@ namespace XBank.Domain.Validators.InputModelsValidators
             _configuration = configuration;
             GetMaxDueDateFromSettings();
 
-            RuleFor(account => account.DueDate)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("A Data de vencimento deve ser informada.");
+            //RuleFor(account => account.DueDate)
+            //    .NotEmpty()
+            //    .NotNull()
+            //    .WithMessage("A Data de vencimento deve ser informada.");
             RuleFor(account => account.DueDate)
                 .Custom((list, context) =>
                 {
@@ -34,10 +34,6 @@ namespace XBank.Domain.Validators.InputModelsValidators
                 .LessThanOrEqualTo(_maxDueDate)
                 .WithMessage($"A Data de vencimento deve ser menor ou igual a {_maxDueDate}.");
 
-            RuleFor(account => account.HolderName)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("O nome do titular deve ser informado.");
             RuleFor(account => account.HolderName)
                 .Must(holderName => holderName.Length > 3)
                 .WithMessage("O nome deve ser maior que 3 caracteres.");

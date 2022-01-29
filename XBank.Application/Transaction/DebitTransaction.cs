@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using XBank.Application.Services.Core;
 using XBank.Domain.Entities;
 using XBank.Domain.Interfaces.Core;
+using XBank.Domain.Models.DTOs;
 using XBank.Domain.Models.InputModel;
 
 namespace XBank.Application.Transaction
@@ -26,39 +27,39 @@ namespace XBank.Application.Transaction
 
         public async override Task<bool> MakeTransaction(TransactionEntity transaction)
         {
-            AccountEntity account = await GetAccount(transaction.AccountEntityId);
+            AccountDTO account = await GetAccount(transaction.AccountEntityId);
             account = DebitBalance(account, transaction.Amount);
             AccountInputModelDebitTransaction accountInputModelDebit = _mapper.Map<AccountInputModelDebitTransaction>(account);
-            AccountEntity updatedAccount = await UpdateDebitTransactionAccount(accountInputModelDebit);
+            UpdateAccountDebitDTO updatedAccount = await UpdateDebitTransactionAccount(accountInputModelDebit);
             return updatedAccount?.Id == transaction.AccountEntityId;
         }
-        private AccountEntity DebitBalance(AccountEntity accountEntity, double value)
+        private AccountDTO DebitBalance(AccountDTO accountDTO, double value)
         {
-            if (!CanDebit(accountEntity, value))
+            if (!CanDebit(accountDTO, value))
                 throw new Exception("Você não possui saldo suficiente para realizar essa transação.");
 
-            accountEntity.Debit(value);
-            return accountEntity;
+            accountDTO.Debit(value);
+            return accountDTO;
         }
-        private bool CanDebit(AccountEntity accountEntity, double value)
+        private bool CanDebit(AccountDTO accountDTO, double value)
         {
-            double subtractionValue = accountEntity.Balance - value;
+            double subtractionValue = accountDTO.Balance - value;
             return subtractionValue >= 0;
         }
-        private async Task<AccountEntity> GetAccount(long id)
+        private async Task<AccountDTO> GetAccount(long id)
         {
-            ILocalRequestHttp<BaseEntity> localRequestHttp = new LocalRequestHttp<BaseEntity>();
+            ILocalRequestHttp<ModelDTO> localRequestHttp = new LocalRequestHttp<ModelDTO>();
             string baseUrl = UtilitiesLibrary.GetSectionFromSettings(_configuration, "EndPoints", "BaseEndPointAccount");
             string fullUrl = string.Concat(baseUrl);
-            return await localRequestHttp.Get<AccountEntity>(fullUrl, id.ToString());
+            return await localRequestHttp.Get<AccountDTO>(fullUrl, id.ToString());
         }
-        private async Task<AccountEntity> UpdateDebitTransactionAccount(AccountInputModelDebitTransaction accountInputModelDebit)
+        private async Task<UpdateAccountDebitDTO> UpdateDebitTransactionAccount(AccountInputModelDebitTransaction accountInputModelDebit)
         {
-            ILocalRequestHttp<BaseEntity> localRequestHttp = new LocalRequestHttp<BaseEntity>();
+            ILocalRequestHttp<ModelDTO> localRequestHttp = new LocalRequestHttp<ModelDTO>();
             string baseUrl = UtilitiesLibrary.GetSectionFromSettings(_configuration, "EndPoints", "BaseEndPointAccount");
             string fullUrl = string.Concat(baseUrl, "UpdateAccountTransaction");
-            AccountEntity updatedAccount = await localRequestHttp.Put<AccountEntity>(fullUrl, accountInputModelDebit);
-            return updatedAccount;
+            UpdateAccountDebitDTO updateAccountDebitDTO = await localRequestHttp.Put<UpdateAccountDebitDTO>(fullUrl, accountInputModelDebit);
+            return updateAccountDebitDTO;
         }
     }
 }

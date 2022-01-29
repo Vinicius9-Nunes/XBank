@@ -40,7 +40,7 @@ namespace XBank.Application.Services
             else if(accountInputModelDelete.AccountStatus == AccountStatus.Active)
                 accountEntity.Active();
 
-            bool response = await _accountRepository.PostAsync(accountEntity);
+            bool response = await _accountRepository.PutAsync(accountEntity);
             if (response)
             {
                 bool isCommitted = await _accountRepository.Commit();

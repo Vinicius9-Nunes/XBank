@@ -9,9 +9,8 @@ namespace XBank.Domain.Models.InputModel
 {
     public class AccountInputModelUpdate
     {
-        [Required]
         public string HolderName { get; set; }
-        [Required]
+
         public int DueDate { get; set; }
     }
 }
