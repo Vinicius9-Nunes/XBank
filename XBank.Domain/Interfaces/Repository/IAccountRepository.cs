@@ -10,5 +10,6 @@ namespace XBank.Domain.Interfaces.Repository
     public interface IAccountRepository : IRepository<AccountEntity>
     {
         Task<AccountEntity> GetByCpfAsync(string cpf);
+        Task<IEnumerable<AccountEntity>> GetAsync(bool includeDisabled);
     }
 }

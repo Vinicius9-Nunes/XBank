@@ -67,9 +67,9 @@ namespace XBank.Application.Services
             return accountEntity.Id;
         }
 
-        public async Task<IEnumerable<AccountDTO>> GetAsync()
+        public async Task<IEnumerable<AccountDTO>> GetAsync(bool includeDisabled)
         {
-            IEnumerable<AccountEntity> accountEntities = await _accountRepository.GetAsync();
+            IEnumerable<AccountEntity> accountEntities = await _accountRepository.GetAsync(includeDisabled);
             if (accountEntities.ToList().Count > 0)
             {
                 IEnumerable<AccountDTO> accountEntitiesDTO = accountEntities.Select(account => _mapper.Map<AccountDTO>(account));

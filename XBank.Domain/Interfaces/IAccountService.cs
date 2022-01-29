@@ -11,7 +11,7 @@ namespace XBank.Domain.Interfaces
 {
     public interface IAccountService
     {
-        Task<IEnumerable<AccountDTO>> GetAsync();
+        Task<IEnumerable<AccountDTO>> GetAsync(bool includeDisabled);
         Task<AccountDTO> GetAsync(long id);
         Task<AccountDTO> GetByCpfAsync(string cpf);
         Task<long> GetAccountIdByCpfAsync(string cpf);

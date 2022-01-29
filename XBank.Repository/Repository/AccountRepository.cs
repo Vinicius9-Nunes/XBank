@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Entities;
+using XBank.Domain.Enums.Account;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Repository.Persistence;
 
@@ -33,9 +34,12 @@ namespace XBank.Repository.Repository
             return entity?.Id > 0;
         }
 
-        public async Task<IEnumerable<AccountEntity>> GetAsync()
+        public async Task<IEnumerable<AccountEntity>> GetAsync(bool includeDisabled)
         {
-            return await _dbSet.ToListAsync();
+            if(!includeDisabled)
+                return await _dbSet.Where(account => account.AccountStatus == AccountStatus.Active).ToListAsync();
+            else
+                return await _dbSet.ToListAsync();
         }
 
         public async Task<AccountEntity> GetAsync(long id)

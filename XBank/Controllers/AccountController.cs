@@ -23,14 +23,14 @@ namespace XBank.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(bool includeDisabled = false)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok(await _accountService.GetAsync());
+                return Ok(await _accountService.GetAsync(includeDisabled));
             }
             catch (Exception ex)
             {

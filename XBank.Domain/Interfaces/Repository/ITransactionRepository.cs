@@ -9,6 +9,6 @@ namespace XBank.Domain.Interfaces.Repository
 {
     public interface ITransactionRepository : IRepository<TransactionEntity>
     {
-
+        Task<IEnumerable<TransactionEntity>> GetAsync();
     }
 }
