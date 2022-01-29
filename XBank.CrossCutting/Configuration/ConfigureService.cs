@@ -23,7 +23,7 @@ namespace XBank.CrossCutting.Configuration
             services.AddTransient<IValidator<TransactionInputModelCreate>, TransactionInputModelCreateValidator>();
             services.AddTransient<IValidator<AccountInputModelCreate>, AccountInputModelCreateValidator>();
             services.AddTransient<IValidator<AccountInputModelUpdate>, AccountInputModelUpdateValidator>();
-            //services.AddTransient<ILocalRequestHttp, LocalRequestHttp>();
+            services.AddTransient<IValidator<AccountInputModelDelete>, AccountInputModelDeleteValidator>();
         }
     }
 }
