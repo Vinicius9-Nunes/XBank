@@ -118,15 +118,15 @@ namespace XBank.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] AccountInputModelDelete accountInputModelDelete)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok(await _accountService.DeleteAsync(id));
+                return Ok(await _accountService.DeleteAsync(accountInputModelDelete));
             }
             catch (Exception ex)
             {
