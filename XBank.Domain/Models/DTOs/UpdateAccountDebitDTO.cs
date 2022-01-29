@@ -8,7 +8,6 @@ namespace XBank.Domain.Models.DTOs
 {
     public class UpdateAccountDebitDTO : ModelDTO
     {
-        public long Id { get; set; }
         public string HolderName { get; set; }
         public double Balance { get; set; }
         public int DueDate { get; set; }
