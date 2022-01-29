@@ -28,12 +28,26 @@ namespace XBank.Domain.Entities
 
             return this;
         }
+        public AccountEntity UpdateDebitTransaction(AccountInputModelDebitTransaction accountInputModel)
+        {
+            if (Id == accountInputModel.Id)
+            {
+                Balance = accountInputModel.Balance;
+                UpdateAt = accountInputModel.UpdateAt;
+                return this;
+            }
+            else
+                throw new Exception("O id informado é divergente do conta atual.");
+
+        }
 
         public void InitializeAccount()
         {
             DateTime date = DateTime.Now;
             CreatAt = date;
             UpdateAt = date;
+            AccountStatus = AccountStatus.Active;
+
             if (!(Balance > 0))
                 Balance = 0;
         }

@@ -22,5 +22,13 @@ namespace XBank.Domain.Entities
             if (accountId > 0)
                 AccountEntityId = accountId;
         }
+        public void InitializeTransaction()
+        {
+            DateTime date = DateTime.Now;
+            CreatAt = date;
+            UpdateAt = date;
+            if (Amount < 0)
+                Amount = 0;
+        }
     }
 }

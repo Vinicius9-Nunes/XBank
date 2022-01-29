@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Models.InputModel;
@@ -126,6 +127,22 @@ namespace XBank.Controllers
             try
             {
                 return Ok(await _accountService.DeleteAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("UpdateAccountTransaction")]
+        public async Task<IActionResult> Put([FromBody]  AccountInputModelDebitTransaction accountInputModelDebit)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                return Ok(await _accountService.UpdateDebitAccountAsync(accountInputModelDebit));
             }
             catch (Exception ex)
             {

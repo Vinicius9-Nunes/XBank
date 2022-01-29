@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Entities;
+using XBank.Domain.Models.DTOs;
 using XBank.Domain.Models.InputModel;
 
 namespace XBank.Domain.Mapping
@@ -17,6 +18,21 @@ namespace XBank.Domain.Mapping
                 .ReverseMap();
 
             CreateMap<AccountEntity, AccountInputModelUpdate>()
+                .ReverseMap();
+
+            CreateMap<AccountEntity, AccountInputModelDebitTransaction>()
+                .ReverseMap();
+
+            CreateMap<AccountEntity, AccountDTO>()
+                .ReverseMap();
+
+            CreateMap<AccountEntity, AccountCreateDTO>()
+                .ReverseMap();
+
+            CreateMap<AccountEntity, AccountUpdateDTO>()
+                .ReverseMap();
+
+            CreateMap<AccountEntity, UpdateAccountDebitDTO>()
                 .ReverseMap();
         }
     }

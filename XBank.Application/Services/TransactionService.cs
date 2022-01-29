@@ -12,6 +12,7 @@ using XBank.Application.Transaction;
 using XBank.Domain.Entities;
 using XBank.Domain.Enums.Transaction;
 using XBank.Domain.Interfaces;
+using XBank.Domain.Interfaces.Core;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.InputModel;
 using XBank.Domain.Validators.InputModelsValidators;
@@ -22,14 +23,12 @@ namespace XBank.Application.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
-        private readonly LocalRequestHttp _localRequestHttp;
         private readonly IConfiguration _configuration;
 
         public TransactionService(ITransactionRepository transactionRepository, IMapper mapper, IConfiguration configuration)
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
-            _localRequestHttp = new LocalRequestHttp();
             _configuration = configuration;
         }
 
@@ -74,20 +73,24 @@ namespace XBank.Application.Services
             cpf = cpf.RemoveCpfLetters();
 
             TransactionEntity transactionEntity = _mapper.Map<TransactionEntity>(transactionInputModel);
+            transactionEntity.InitializeTransaction();
 
+            ILocalRequestHttp<Int64> localRequestHttp = new LocalRequestHttp<Int64>();
             string fullUrl = string.Concat(UtilitiesLibrary.GetSectionFromSettings(_configuration, "EndPoints", "BaseEndPointAccount"), "GetAccountIdByCpf/");
-            long accountId = await _localRequestHttp.Get<long>(fullUrl, cpf);
+            long accountId = await localRequestHttp.Get<long>(fullUrl, cpf);
 
             if (accountId > 0)
             {
                 transactionEntity.UpdateAccountEntityId(accountId);
                 BankTransaction bankTransaction = null;
 
-                if(transactionEntity.TransactionType == TransactionType.Credit)
+                if (transactionEntity.TransactionType == TransactionType.Credit)
                     bankTransaction = new CreditTransaction();
 
-                else if(transactionEntity.TransactionType == TransactionType.Debit)
-                    bankTransaction = new DebitTransaction(_configuration);
+                else if (transactionEntity.TransactionType == TransactionType.Debit)
+                    bankTransaction = new DebitTransaction(_configuration, _mapper);
+
+                else throw new Exception("Não foi localizado o tipo da transação.");
 
                 bool UpdateAccount = await bankTransaction.MakeTransaction(transactionEntity);
                 if (UpdateAccount)
