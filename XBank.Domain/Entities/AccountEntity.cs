@@ -57,5 +57,33 @@ namespace XBank.Domain.Entities
             Balance = Balance - value;
             UpdateAt = DateTime.Now;
         }
+
+        public void Disabled()
+        {
+            if (AccountStatus != AccountStatus.Disabled)
+            {
+                AccountStatus = AccountStatus.Disabled;
+                UpdateAt = DateTime.Now;
+            }
+            else throw new Exception($"Essa conta já esta com o status {AccountStatus.ToString()}");
+        }
+        public void Suspended()
+        {
+            if (AccountStatus != AccountStatus.Suspended)
+            {
+                AccountStatus = AccountStatus.Suspended;
+                UpdateAt = DateTime.Now;
+            }
+            else throw new Exception($"Essa conta já esta com o status {AccountStatus.ToString()}");
+        }
+        public void Active()
+        {
+            if (AccountStatus != AccountStatus.Active)
+            {
+                AccountStatus = AccountStatus.Active;
+                UpdateAt = DateTime.Now;
+            }
+            else throw new Exception($"Essa conta já esta com o status {AccountStatus.ToString()}");
+        }
     }
 }

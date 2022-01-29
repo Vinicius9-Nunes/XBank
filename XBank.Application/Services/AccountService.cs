@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XBank.Domain.Entities;
+using XBank.Domain.Enums.Account;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Interfaces.Repository;
 using XBank.Domain.Models.DTOs;
@@ -23,21 +24,31 @@ namespace XBank.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(AccountInputModelDelete accountInputModelDelete)
         {
-            if (id < 1)
+            if (accountInputModelDelete.Id < 1)
                 throw new ArgumentNullException("Id informado é nulo.");
-            if (!await _accountRepository.ExistAsync(id))
+            if (!await _accountRepository.ExistAsync(accountInputModelDelete.Id))
                 throw new Exception("Nenhuma conta encontrada pelo id informado");
 
-            AccountEntity accountEntity = await _accountRepository.GetAsync(id);
+            AccountEntity accountEntity = await _accountRepository.GetAsync(accountInputModelDelete.Id);
 
-            bool response = await _accountRepository.DeleteAsync(accountEntity);
+            if (accountInputModelDelete.AccountStatus == AccountStatus.Disabled)
+                accountEntity.Disabled();
+            else if (accountInputModelDelete.AccountStatus == AccountStatus.Suspended)
+                accountEntity.Suspended();
+            else if(accountInputModelDelete.AccountStatus == AccountStatus.Active)
+                accountEntity.Active();
+
+            bool response = await _accountRepository.PostAsync(accountEntity);
             if (response)
             {
                 bool isCommitted = await _accountRepository.Commit();
                 if (isCommitted)
-                    return !await _accountRepository.ExistAsync(id);
+                {
+                    AccountEntity entity = await _accountRepository.GetAsync(accountEntity.Id);
+                    return entity.AccountStatus == accountInputModelDelete.AccountStatus;
+                }
             }
 
             throw new Exception("Ocorreu um erro ao deletar a conta.");
