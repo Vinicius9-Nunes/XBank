@@ -27,6 +27,7 @@ namespace XBank.Domain.Entities
             DateTime date = DateTime.Now;
             CreatAt = date;
             UpdateAt = date;
+            TransactionDate = date;
             if (Amount < 0)
                 Amount = 0;
         }

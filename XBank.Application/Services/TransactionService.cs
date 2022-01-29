@@ -85,7 +85,7 @@ namespace XBank.Application.Services
                 BankTransaction bankTransaction = null;
 
                 if (transactionEntity.TransactionType == TransactionType.Credit)
-                    bankTransaction = new CreditTransaction();
+                    bankTransaction = new CreditTransaction(_configuration, _mapper);
 
                 else if (transactionEntity.TransactionType == TransactionType.Debit)
                     bankTransaction = new DebitTransaction(_configuration, _mapper);

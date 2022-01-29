@@ -135,6 +135,9 @@ namespace XBank.Application.Services
                 throw new Exception("Nenhuma conta encontrada pelo id informado");
 
             AccountEntity accountEntity = await _accountRepository.GetAsync(id);
+
+            if (accountEntity.AccountStatus != AccountStatus.Active)
+                throw new Exception($"Não é possivel atualizar a conta pois a mesma esta com status de {accountEntity.AccountStatus.ToString()}.");
             accountEntity.Update(accountInputModel);
             bool modified = await _accountRepository.PutAsync(accountEntity);
             if (modified)
@@ -156,6 +159,10 @@ namespace XBank.Application.Services
                 throw new Exception("Não existe um conta com o id informado.");
 
             AccountEntity accountEntity = await _accountRepository.GetAsync(accountInputModel.Id);
+
+            if (accountEntity.AccountStatus != AccountStatus.Active)
+                throw new Exception($"Não é possivel atualizar a conta pois a mesma esta com status de {accountEntity.AccountStatus.ToString()}.");
+
             accountEntity.UpdateDebitTransaction(accountInputModel);
 
             bool modified = await _accountRepository.PutAsync(accountEntity);
