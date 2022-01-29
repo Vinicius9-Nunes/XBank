@@ -35,8 +35,14 @@ namespace XBank.Domain.Validators.InputModelsValidators
                 .WithMessage($"A Data de vencimento deve ser menor ou igual a {_maxDueDate}.");
 
             RuleFor(account => account.HolderName)
-                .Must(holderName => holderName.Length > 3)
-                .WithMessage("O nome deve ser maior que 3 caracteres.");
+                .Custom((list, context) =>
+                {
+                    if (!string.IsNullOrEmpty(list))
+                    {
+                        if (list.Length < 3)
+                            context.AddFailure("O nome deve ser maior que 3 caracteres.");
+                    }
+                });
         }
 
         private bool GetMaxDueDateFromSettings()

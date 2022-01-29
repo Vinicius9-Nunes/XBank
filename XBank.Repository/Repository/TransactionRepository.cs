@@ -36,7 +36,7 @@ namespace XBank.Repository.Repository
         public async Task<bool> ExistAsync(long id)
         {
             TransactionEntity transactionEntity = await GetAsync(id);
-            return transactionEntity.Id > 0;
+            return transactionEntity?.Id > 0;
         }
 
         public async Task<IEnumerable<TransactionEntity>> GetAsync()
