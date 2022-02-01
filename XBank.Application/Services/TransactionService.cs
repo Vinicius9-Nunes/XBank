@@ -14,6 +14,7 @@ using XBank.Domain.Enums.Transaction;
 using XBank.Domain.Interfaces;
 using XBank.Domain.Interfaces.Core;
 using XBank.Domain.Interfaces.Repository;
+using XBank.Domain.Models.DTOs.Transactions;
 using XBank.Domain.Models.InputModel;
 using XBank.Domain.Validators.InputModelsValidators;
 
@@ -32,7 +33,7 @@ namespace XBank.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<object> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(long id)
         {
             if (id < 1)
                 throw new Exception("Id Informado é nulo.");
@@ -51,22 +52,24 @@ namespace XBank.Application.Services
 
         }
 
-        public async Task<object> GetAsync()
+        public async Task<IEnumerable<TransactionDTO>> GetAsync()
         {
-            return await _transactionRepository.GetAsync();
+            IEnumerable<TransactionEntity> transactionEntities =  await _transactionRepository.GetAsync();
+            return transactionEntities?.Select(transaction => _mapper.Map<TransactionDTO>(transaction));
         }
 
-        public async Task<object> GetAsync(long id)
+        public async Task<TransactionDTO> GetAsync(long id)
         {
             if (id < 1)
                 throw new ArgumentNullException("Id informado é nulo.");
             if (!await _transactionRepository.ExistAsync(id))
                 throw new Exception("Nenhuma transação encontrada pelo id informado");
 
-            return await _transactionRepository.GetAsync(id);
+            TransactionEntity transaction = await _transactionRepository.GetAsync(id);
+            return _mapper.Map<TransactionDTO>(transaction);
         }
 
-        public async Task<object> PostAsync(string cpf, TransactionInputModelCreate transactionInputModel)
+        public async Task<TransactionCreateDTO> PostAsync(string cpf, TransactionInputModelCreate transactionInputModel)
         {
             if (!cpf.IsValidCPF())
                 throw new ArgumentException("O cpf informado é invalido.");
@@ -100,7 +103,10 @@ namespace XBank.Application.Services
                     {
                         bool isCommitted = await _transactionRepository.Commit();
                         if (isCommitted && await _transactionRepository.ExistAsync(transactionEntity.Id))
-                            return await _transactionRepository.GetAsync(transactionEntity.Id);
+                        {
+                            TransactionEntity transaction = await _transactionRepository.GetAsync(transactionEntity.Id);
+                            return _mapper.Map<TransactionCreateDTO>(transaction);
+                        }
                     }
                 }
             }
