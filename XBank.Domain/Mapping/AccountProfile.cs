@@ -32,6 +32,9 @@ namespace XBank.Domain.Mapping
             CreateMap<AccountEntity, AccountUpdateDTO>()
                 .ReverseMap();
 
+            CreateMap<AccountEntity, AccountUpdateBalanceDTO>()
+                .ReverseMap();
+
             CreateMap<AccountEntity, UpdateAccountDebitDTO>()
                 .ReverseMap();
 

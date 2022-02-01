@@ -101,6 +101,21 @@ namespace XBank.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("{id}/AddMoney")]
+        public async Task<IActionResult> AddMoney(long id, double value)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                return Ok(await _accountService.AddMoneyAsync(id, value));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(long id, [FromBody] AccountInputModelUpdate accountInputModel)

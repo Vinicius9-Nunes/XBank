@@ -18,6 +18,7 @@ namespace XBank.Domain.Interfaces
         Task<AccountCreateDTO> PostAsync(AccountInputModelCreate accountInputModel);
         Task<AccountUpdateDTO> PutAsync(long id, AccountInputModelUpdate accountInputModel);
         Task<UpdateAccountDebitDTO> UpdateDebitAccountAsync(AccountInputModelDebitTransaction accountInputModel);
+        Task<AccountUpdateBalanceDTO> AddMoneyAsync(long id, double value);
         Task<bool> DeleteAsync(AccountInputModelDelete accountInputModelDelete);
 
     }

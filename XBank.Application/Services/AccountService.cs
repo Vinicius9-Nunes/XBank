@@ -24,6 +24,32 @@ namespace XBank.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<AccountUpdateBalanceDTO> AddMoneyAsync(long id, double value)
+        {
+            if (value <= 0)
+                throw new Exception("O Valor deve ser maior que zero");
+            if (!await _accountRepository.ExistAsync(id))
+                throw new Exception("Não foi localizado uma conta pelo id informado.");
+
+            AccountEntity accountEntity = await _accountRepository.GetAsync(id);
+            if (accountEntity.AccountStatus != AccountStatus.Active)
+                throw new Exception($"Não é possivel atualizar a conta pois a mesma esta com status de {accountEntity.AccountStatus.ToString()}.");
+
+            accountEntity.UpdateBalance(value);
+            bool modified = await _accountRepository.PutAsync(accountEntity);
+            if (modified)
+            {
+                bool isCommitted = await _accountRepository.Commit();
+                if (isCommitted && await _accountRepository.ExistAsync(accountEntity.Id))
+                {
+                    AccountEntity response = await _accountRepository.GetAsync(accountEntity.Id);
+                    return _mapper.Map<AccountUpdateBalanceDTO>(response);
+                }
+            }
+
+            throw new Exception("Ocorreu um erro ao adicionar dinheiro na conta.");
+        }
+
         public async Task<bool> DeleteAsync(AccountInputModelDelete accountInputModelDelete)
         {
             if (accountInputModelDelete.Id < 1)

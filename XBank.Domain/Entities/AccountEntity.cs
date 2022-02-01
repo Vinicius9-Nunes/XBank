@@ -28,6 +28,17 @@ namespace XBank.Domain.Entities
 
             return this;
         }
+        public AccountEntity UpdateBalance(double value)
+        {
+            if(value > 0)
+            {
+                Balance += value;
+                UpdateAt = DateTime.Now;
+                return this;
+            }
+
+            throw new Exception("Valor deve ser maior que zero.");
+        }
         public AccountEntity UpdateDebitTransaction(AccountInputModelDebitTransaction accountInputModel)
         {
             if (Id == accountInputModel.Id)
