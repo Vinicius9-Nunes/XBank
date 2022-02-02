@@ -93,6 +93,9 @@ namespace XBank.Application.Services
                 else if (transactionEntity.TransactionType == TransactionType.Debit)
                     bankTransaction = new DebitTransaction(_configuration, _mapper);
 
+                else if (transactionEntity.TransactionType == TransactionType.Deposit)
+                    bankTransaction = new DepositTransaction(_configuration, _mapper);
+
                 else throw new Exception("Não foi localizado o tipo da transação.");
 
                 bool UpdateAccount = await bankTransaction.MakeTransaction(transactionEntity);

@@ -32,6 +32,29 @@ namespace XBank.Application.Services.Core
                 throw new HttpRequestException(await responseRequest.Content.ReadAsStringAsync());
         }
 
+        public async Task<T> PostQueryString<T>(string fullUrl) where T : C
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage responseRequest = await client.PostAsJsonAsync(fullUrl, new { });
+            if (responseRequest.IsSuccessStatusCode)
+            {
+                string response = await responseRequest.Content.ReadAsStringAsync();
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(response);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Não foi possivel converter para o tipo informado: {ex.Message}");
+                }
+            }
+            else
+                throw new HttpRequestException(await responseRequest.Content.ReadAsStringAsync());
+        }
+
         public async Task<T> Put<T>(string baseUrl, object body, string parameter = null) where T : C
         {
             HttpClient client = new HttpClient();
