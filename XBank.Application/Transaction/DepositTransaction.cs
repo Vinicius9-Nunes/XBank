@@ -21,7 +21,7 @@ namespace XBank.Application.Transaction
             string baseUrl = UtilitiesLibrary.GetSectionFromSettings(_configuration, "EndPoints", "BaseEndPointAccount");
             string fullUrl = string.Concat(baseUrl, transaction.AccountEntityId, "/AddMoney?value=", transaction.Amount);
             AccountUpdateBalanceDTO accountUpdateBalanceDTO = await localRequestHttp.PostQueryString<AccountUpdateBalanceDTO>(fullUrl);
-            throw new Exception();
+            return !string.IsNullOrEmpty(accountUpdateBalanceDTO?.HolderCpf);
         }
     }
 }

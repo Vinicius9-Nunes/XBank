@@ -19,6 +19,10 @@ namespace XBank.Domain.Validators.InputModelsValidators
             RuleFor(transaction => transaction.TransactionType)
                 .IsInEnum()
                 .WithMessage("O tipo de transação informado não é valido.");
+            RuleFor(transaction => transaction.Amount)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Você deve informar uma valor para essa transação.");
         }
     }
 }
