@@ -10,8 +10,8 @@ using XBank.Repository.Persistence;
 namespace XBank.Repository.Migrations
 {
     [DbContext(typeof(XBankDbContext))]
-    [Migration("20220121022300_initXBank")]
-    partial class initXBank
+    [Migration("20220203163026_continueSqlServer")]
+    partial class continueSqlServer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,7 +69,7 @@ namespace XBank.Repository.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("AccountEntityId")
+                    b.Property<long>("AccountEntityId")
                         .HasColumnType("bigint");
 
                     b.Property<double>("Amount")
@@ -79,7 +79,6 @@ namespace XBank.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
@@ -103,7 +102,9 @@ namespace XBank.Repository.Migrations
                 {
                     b.HasOne("XBank.Domain.Entities.AccountEntity", null)
                         .WithMany("Transactions")
-                        .HasForeignKey("AccountEntityId");
+                        .HasForeignKey("AccountEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("XBank.Domain.Entities.AccountEntity", b =>

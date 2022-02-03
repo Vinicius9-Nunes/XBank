@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace XBank.Repository.Persistence
     {
         private EntityConfiguration entityConfiguration;
         private readonly IConfiguration _configuration;
+        private const string connectionName = "Default"; //"LiverServer";
         public XBankDbContext(DbContextOptions<XBankDbContext> options, IConfiguration configuration) : base(options)
         {
             this.entityConfiguration = new EntityConfiguration();
@@ -32,7 +34,7 @@ namespace XBank.Repository.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Default"));
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(connectionName));
             base.OnConfiguring(optionsBuilder);
         }
     }
