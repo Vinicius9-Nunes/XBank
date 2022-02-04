@@ -10,6 +10,20 @@ namespace XBank.Domain.Entities
 {
     public class AccountEntity : BaseEntity
     {
+        public AccountEntity(long id, string holderName, string holderCpf, double balance, int dueDate, AccountStatus accountStatus)
+        {
+            Id = id;
+            HolderName = holderName;
+            HolderCpf = holderCpf;
+            Balance = balance;
+            DueDate = dueDate;
+            AccountStatus = accountStatus;
+        }
+        public AccountEntity()
+        {
+
+        }
+
         public string HolderName { get; private set; }
         public string HolderCpf { get; private set; }
         public double Balance { get; private set; }

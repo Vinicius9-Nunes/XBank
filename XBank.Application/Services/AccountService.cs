@@ -53,7 +53,7 @@ namespace XBank.Application.Services
         public async Task<bool> DeleteAsync(AccountInputModelDelete accountInputModelDelete)
         {
             if (accountInputModelDelete.Id < 1)
-                throw new ArgumentNullException("Id informado é nulo.");
+                throw new Exception("Id informado é nulo.");
             if (!await _accountRepository.ExistAsync(accountInputModelDelete.Id))
                 throw new Exception("Nenhuma conta encontrada pelo id informado");
 
